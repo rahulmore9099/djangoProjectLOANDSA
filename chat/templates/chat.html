@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secur Bank AI - Banking Chatbot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #121212 0%, #1e1e1e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .bank-logo {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: #63b3ed;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+        
+        .tagline {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 5px;
+            color: #a0aec0;
+        }
+        
+        .status-indicator {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 16px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            border: 1px solid #2d3748;
+        }
+        
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #48bb78;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-dot.offline {
+            background: #f56565;
+            animation: none;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1.3fr;
+            gap: 30px;
+        }
+        
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .info-panel {
+            background: #2d3748;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+            border: 1px solid #4a5568;
+        }
+        
+        .panel-title {
+            color: #63b3ed;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #4a5568;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin: 24px 0;
+        }
+        
+        .feature-card {
+            background: #374151;
+            padding: 16px;
+            border-radius: 12px;
+            border-left: 4px solid #4299e1;
+            transition: all 0.3s ease;
+            border: 1px solid #4a5568;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(66, 153, 225, 0.2);
+            background: #4a5568;
+        }
+        
+        .feature-card i {
+            color: #63b3ed;
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+        
+        .feature-card h4 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #e2e8f0;
+        }
+        
+        .feature-card p {
+            font-size: 13px;
+            color: #a0aec0;
+        }
+        
+        .quick-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        
+        .action-btn {
+            background: #4a5568;
+            border: 1px solid #2d3748;
+            padding: 10px 16px;
+            border-radius: 8px;
+            color: #e2e8f0;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .action-btn:hover {
+            background: #4299e1;
+            color: white;
+            border-color: #4299e1;
+        }
+        
+        .chat-container {
+            background: #2d3748;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            height: 700px;
+            border: 1px solid #4a5568;
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 100%);
+            color: white;
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #4a5568;
+        }
+        
+        .chat-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #e2e8f0;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+            background: #1a202c;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .message {
+            display: flex;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .message.bot {
+            justify-content: flex-start;
+        }
+        
+        .message.user {
+            justify-content: flex-end;
+        }
+        
+        .message-content {
+            max-width: 75%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+        
+        .message.bot .message-content {
+            background: #374151;
+            color: #e2e8f0;
+            border: 1px solid #4a5568;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            max-width: 85%;
+        }
+        
+        .message.user .message-content {
+            background: linear-gradient(135deg, #2b6cb0 0%, #4299e1 100%);
+            color: white;
+            border: 1px solid #3182ce;
+        }
+        
+        /* AI Response Styling */
+        .ai-response {
+            line-height: 1.6;
+        }
+
+        .ai-response p {
+            margin: 8px 0;
+            color: #e2e8f0;
+            font-size: 14px;
+        }
+
+        .ai-response p:first-child {
+            margin-top: 0;
+        }
+
+        .ai-response p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .ai-response ol.chat-list,
+        .ai-response ul.chat-list {
+            margin: 12px 0;
+            padding-left: 24px;
+        }
+
+        .ai-response ol.chat-list {
+            list-style-type: decimal;
+        }
+
+        .ai-response ul.chat-list {
+            list-style-type: disc;
+        }
+
+        .ai-response ol.chat-list li,
+        .ai-response ul.chat-list li {
+            margin: 8px 0;
+            padding: 8px 0;
+            color: #e2e8f0;
+            font-size: 14px;
+            line-height: 1.5;
+            border-bottom: 1px dotted #4a5568;
+        }
+        
+        .ai-response ol.chat-list li:last-child,
+        .ai-response ul.chat-list li:last-child {
+            border-bottom: none;
+        }
+        
+        /* TABLE STYLING - Improved clarity */
+        .bank-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 16px 0;
+            font-size: 13px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid #4a5568;
+        }
+        
+        .bank-table th {
+            background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 100%);
+            color: white;
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            border-bottom: 2px solid #4299e1;
+        }
+        
+        .bank-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #4a5568;
+            vertical-align: top;
+            background: #2d3748;
+            color: #e2e8f0;
+        }
+        
+        .bank-table tr:nth-child(even) td {
+            background-color: #374151;
+        }
+        
+        .bank-table tr:hover td {
+            background-color: #4a5568;
+        }
+        
+        .bank-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .bank-table .highlight {
+            background-color: #2c5282 !important;
+            font-weight: 600;
+            color: #90cdf4;
+        }
+        
+        .bank-table .interest-cell {
+            color: #68d391;
+            font-weight: 600;
+            background-color: #2d3748 !important;
+        }
+        
+        .bank-table .fee-cell {
+            color: #fc8181;
+            font-weight: 500;
+            background-color: #2d3748 !important;
+        }
+        
+        .comparison-section {
+            margin: 16px 0;
+            padding: 16px;
+            background: linear-gradient(135deg, #374151 0%, #4a5568 100%);
+            border-radius: 10px;
+            border: 1px solid #2d3748;
+        }
+        
+        .warning-box {
+            background: #744210;
+            border-left: 4px solid #d69e2e;
+            padding: 14px;
+            margin: 12px 0;
+            font-size: 13px;
+            border-radius: 6px;
+            line-height: 1.5;
+            color: #fbd38d;
+        }
+        
+        .typing-indicator {
+            display: none;
+            padding: 12px 16px;
+            background: #374151;
+            border: 1px solid #4a5568;
+            border-radius: 12px;
+            width: fit-content;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            margin-top: 4px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .typing-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #a0aec0;
+            border-radius: 50%;
+            margin: 0 3px;
+            animation: typing 1.4s infinite;
+        }
+        
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typing {
+            0%, 60%, 100% { opacity: 0.3; }
+            30% { opacity: 1; }
+        }
+        
+        .chat-input-area {
+            padding: 16px 24px;
+            border-top: 1px solid #4a5568;
+            display: flex;
+            gap: 12px;
+            background: #2d3748;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #4a5568;
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+            background: #1a202c;
+            color: #e2e8f0;
+        }
+        
+        .chat-input:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+            background: #2d3748;
+        }
+        
+        .chat-input::placeholder {
+            color: #a0aec0;
+        }
+        
+        .send-btn {
+            background: linear-gradient(135deg, #2b6cb0 0%, #4299e1 100%);
+            color: white;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .send-btn:hover:not(:disabled) {
+            box-shadow: 0 6px 16px rgba(66, 153, 225, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .suggested-section {
+            padding: 12px 24px;
+            background: #374151;
+            border-top: 1px solid #4a5568;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .suggested-btn {
+            background: #2d3748;
+            border: 1px solid #4a5568;
+            color: #63b3ed;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .suggested-btn:hover {
+            background: #4299e1;
+            color: white;
+            border-color: #4299e1;
+        }
+        
+        .scrollbar-custom::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .scrollbar-custom::-webkit-scrollbar-track {
+            background: #2d3748;
+        }
+        
+        .scrollbar-custom::-webkit-scrollbar-thumb {
+            background: #4a5568;
+            border-radius: 3px;
+        }
+        
+        .scrollbar-custom::-webkit-scrollbar-thumb:hover {
+            background: #63b3ed;
+        }
+        
+        .welcome-box {
+            padding: 16px;
+            background: linear-gradient(135deg, #374151 0%, #4a5568 100%);
+            border-radius: 12px;
+            border-left: 4px solid #4299e1;
+            margin: 12px 0;
+            border: 1px solid #2d3748;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo-section">
+                <div class="bank-logo">SB</div>
+                <div>
+                    <h1>Secur Bank AI</h1>
+                    <div class="tagline">Professional Banking Intelligence Platform</div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="main-content">
+            <!-- Info Panel -->
+            <div class="info-panel">
+                <h2 class="panel-title">Banking Services</h2>
+                <p style="color: #a0aec0; margin-bottom: 16px; line-height: 1.6;">Professional banking guidance powered by AI with real-time financial intelligence</p>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <i class="fas fa-home"></i>
+                        <h4>Home Financing</h4>
+                        <p>Home financing with competitive rates</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-car"></i>
+                        <h4>Auto Financing</h4>
+                        <p>Vehicle loans with flexible terms</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-hand-holding-usd"></i>
+                        <h4>Personal Loans</h4>
+                        <p>Customized loan solutions</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-shield-alt"></i>
+                        <h4>Secure Banking</h4>
+                        <p>Enterprise-grade security</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-robot"></i>
+                        <h4>AI Intelligence</h4>
+                        <p>Smart financial analysis</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-chart-line"></i>
+                        <h4>Rate Comparisons</h4>
+                        <p>Real-time rate comparisons</p>
+                    </div>
+                </div>
+                
+                <h3 style="color: #63b3ed; font-size: 16px; margin-top: 20px; margin-bottom: 12px;"></h3>
+                <div class="quick-actions">
+                </div>
+            </div>
+            
+            <!-- Chat Container -->
+            <div class="chat-container">
+                <div class="chat-header">
+                    <h2><i class="fas fa-comments"></i> Secur Bank AI Assistant</h2>
+                    <span id="headerStatus" style="font-size: 12px; background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 4px; color: #a0aec0;">Online</span>
+                </div>
+                
+                <div class="chat-messages scrollbar-custom" id="chatMessages">
+                    <div class="message bot">
+                        <div class="message-content">
+                            <div class="ai-response">
+                                <p><strong>💼 Welcome to Secur Bank AI</strong></p>
+                                <p style="margin-top: 10px;">Professional banking intelligence at your service. How may I assist with your financial needs today?</p>
+                                <div class="welcome-box">
+                                    <strong>📈 Professional Services:</strong>
+                                    <ul class="chat-list">
+                                        <li>Auto financing analysis</li>
+                                        <li>Personal loan eligibility assessment</li>
+                                        <li>Banking product comparisons</li>
+                                        <li>Financial planning guidance</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Typing indicator will appear here when bot is responding -->
+                </div>
+                
+                <div class="chat-input-area">
+                    <input 
+                        type="text" 
+                        class="chat-input" 
+                        id="userInput" 
+                        placeholder="Ask about professional banking services, loans, or financial guidance..." 
+                        onkeyup="handleKeyPress(event)"
+                    >
+                    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const chatMessages = document.getElementById('chatMessages');
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+        
+        const typingIndicator = document.createElement('div');
+        typingIndicator.className = 'typing-indicator';
+        typingIndicator.id = 'typingIndicator';
+        typingIndicator.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
+
+        // Get CSRF Token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Update Status
+        function setStatus(online) {
+            document.getElementById('headerStatus').textContent = online ? 'Online' : 'Offline';
+        }
+
+        // Add Message
+        function addMessage(text, isUser) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'message ' + (isUser ? 'user' : 'bot');
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            
+            if (isUser) {
+                contentDiv.textContent = text;
+            } else {
+                contentDiv.innerHTML = text;
+            }
+            
+            msgDiv.appendChild(contentDiv);
+            chatMessages.appendChild(msgDiv);
+            
+            // If it's a user message, add typing indicator after it
+            if (isUser) {
+                typingIndicator.style.display = 'block';
+                chatMessages.appendChild(typingIndicator);
+            }
+            
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Show/Hide Typing
+        function showTyping() {
+            typingIndicator.style.display = 'block';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function hideTyping() {
+            typingIndicator.style.display = 'none';
+        }
+
+        // Send Message to Django Backend
+        async function sendMessage() {
+            const msg = userInput.value.trim();
+            if (!msg || sendBtn.disabled) return;
+            
+            addMessage(msg, true);
+            userInput.value = '';
+            sendBtn.disabled = true;
+            showTyping();
+
+            try {
+                const csrftoken = getCookie('csrftoken');
+                const response = await fetch('/chat-api/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken,
+                    },
+                    body: JSON.stringify({ message: msg })
+                });
+
+                const data = await response.json();
+                hideTyping();
+                
+                addMessage(data.reply || "<p>I apologize for the inconvenience. Our professional banking service is currently experiencing technical difficulties. Please try again shortly.</p>", false);
+                setStatus(true);
+                
+            } catch (error) {
+                hideTyping();
+                console.error('Error:', error);
+                addMessage('<p>Unable to connect to the service. Please check your connection and try again.</p>', false);
+                setStatus(false);
+            }
+            
+            sendBtn.disabled = false;
+            userInput.focus();
+        }
+
+        // Ask Question
+        function askQuestion(q) {
+            userInput.value = q;
+            sendMessage();
+        }
+
+        // Key Press
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+
+        // Check Health
+        async function checkHealth() {
+            try {
+                const csrftoken = getCookie('csrftoken');
+                const response = await fetch('/chat-api/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken,
+                    },
+                    body: JSON.stringify({ message: 'ping' })
+                });
+                setStatus(response.ok);
+            } catch {
+                setStatus(false);
+            }
+        }
+
+        // Initialize
+        window.addEventListener('load', () => {
+            checkHealth();
+            userInput.focus();
+            hideTyping();
+        });
+
+        // Periodic check
+        setInterval(checkHealth, 30000);
+    </script>
+</body>
+</html>
